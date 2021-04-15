@@ -7,6 +7,7 @@ console.log(args);
 const jsDocKeywords = [ 'type', 'function', 'param', 'returns', 'return' ];
 const emptyBlock = ()=> ({ params:[], notes: [] });
 const newBlockInCaseOfMissingBegin = true;
+const showTypes = flase;
 
 const jsDoc= [];
 
@@ -134,11 +135,11 @@ const blockToMarkdown = block => {
   // ##### (_(string)_ opts.amount, _(string)_ opts.amount, )
   let markdown='';
   if (block.is==='function') {
-    const params = '#####' + block.params
+    const params = '##### ' + block.params
       .map (paramStr=> {
         const [name, type] = paramStr.split(': ').reverse();
         let mdParam = '';
-        if (type)
+        if (type && showTypes)
           mdParam += `_(${type})_ ` ;
         if (name)
           mdParam += name ;
