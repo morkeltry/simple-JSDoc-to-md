@@ -128,6 +128,45 @@ const linesToBlocks = lines => {
 
 }
 
+const blockToMarkdown = block => {
+  // eg:
+  // #### _function_ wrapNativeCurrency 
+  // ##### (_(string)_ opts.amount, _(string)_ opts.amount, )
+  let markdown='';
+  if (block.is==='function') {
+    const params = '#####' + block.params
+      .map (paramStr=> {
+        const [name, type] = paramStr.split(': ').reverse();
+        let mdParam = '';
+        if (type)
+          mdParam += `_(${type})_ ` ;
+        if (name)
+          mdParam += name ;
+        return mdParam
+      })
+      .join(', ')
+    return `#### ${ block.name || block.function.name || block.function }${ 
+      (block.params || block.returns) 
+        ? `\n ${block.params ? params : `` } ${ block.returns ? ` -> ${block.returns}` : `` }`
+        : ``        
+      }`
+
+  } else if (block.is==='type') {
+    // types are similar
+  } else {
+    // shouldn't reach here
+    console.log("shouldn't reach here");
+  }
+  // shouldn't reach here
+  return markdown
+}
+
+const blockToTextLines = block => {
+  
+
+}
+
+
 const isGoodJsDoc =  (whitelist) => {
   return blocksOrMaybeLines=>
     !whitelist 
@@ -142,17 +181,17 @@ const grabInterestingLines = doc=> {
 args
   .filter(isFilename)
   .forEach(file=>{
-    console.log(file);
     const content = fs.readFileSync(file).toString();
     console.log( 
       linesToBlocks(jsDocToLines(content))   
+      .map(blockToMarkdown)
+      .map(markdown=> markdown+'\n\n')
+      .join('\n')
     );
     // content
     //   .map(grabInterestingLines)
     //   .filter(isGoodJsDoc)
   })
-
-console.log('Done :)');
 
 
 
